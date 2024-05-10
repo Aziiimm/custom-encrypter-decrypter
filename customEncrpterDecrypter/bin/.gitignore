@@ -1,6 +1,5 @@
-/decryption/
-/encryption/
-/filehandling/
 /gui/
-/module-info.class
+/encryption/
 /utils/
+/decryption/
+/filehandling/
