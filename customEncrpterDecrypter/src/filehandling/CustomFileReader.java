@@ -18,10 +18,8 @@ public class CustomFileReader {
 			}
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(null, "Error Reading File");
-//			ex.printStackTrace();
 		} catch (SecurityException ex) {
 			JOptionPane.showMessageDialog(null, "Error Reading File");
-//			ex.printStackTrace();
 		}
 
 		// Return content of the file stored as a string

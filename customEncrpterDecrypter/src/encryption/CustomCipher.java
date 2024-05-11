@@ -23,6 +23,7 @@ public class CustomCipher {
 		return generatedString.toString();
 	}
 
+	// Shuffles the usable alphabet
 	public static String createRandomShift() {
 		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ,./;'[]-=<>?:{}!@#$%^&*()|";
 		StringBuilder shift = new StringBuilder(alphabet.length());
@@ -35,14 +36,14 @@ public class CustomCipher {
 
 		// Method to randomly permute the array of possible chars
 		Collections.shuffle(chars);
-
+		
 		for (Character c : chars) {
 			shift.append(c);
 		}
-
 		return shift.toString();
 	}
-
+	
+	// Maps each letter of normal alphabet to shuffled alphabet
 	public static Map<Character, Character> subTable(String shift) {
 		Map<Character, Character> subTable = new HashMap<>();
 		String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ,./;'[]-=<>?:{}!@#$%^&*()|";
@@ -57,20 +58,15 @@ public class CustomCipher {
 	public static String encryptContent(String fileContent, String key) {
 
 		String shift = "";
-		if (key == null || key.isEmpty()) {
-			key = randomKey();
-			JOptionPane.showMessageDialog(null, "Using Program Generated Key: " + key);
+
+		if (!keysTable.containsKey(key)) {
 			shift = createRandomShift();
 			keysTable.put(key, shift);
-		} else if (!keysTable.containsKey(key)) {
-			JOptionPane.showMessageDialog(null, "Using Key: " + key);
-			shift = createRandomShift();
-			keysTable.put(key, shift);
-		} else if (keysTable.containsKey(key)) {
-			JOptionPane.showMessageDialog(null, "Using Key: " + key);
+		} else {
 			shift = keysTable.get(key);
 		}
 
+		JOptionPane.showMessageDialog(null, "Using Key: " + key);
 		Map<Character, Character> subTable = subTable(shift);
 
 		StringBuilder cipheredText = new StringBuilder();

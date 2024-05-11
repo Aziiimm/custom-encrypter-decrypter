@@ -41,6 +41,7 @@ public class MainWindow extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					// Prevents launching application with focus on an element
 					UIManager.put("Button.focus", new Color(0, 0, 0, 0));
 					MainWindow frame = new MainWindow();
 					frame.setVisible(true);
@@ -63,9 +64,9 @@ public class MainWindow extends JFrame {
 
 		contentPane = new JPanel();
 		setBounds(100, 100, 884, 596);
-		contentPane.setBackground(new Color(30, 53, 47));
+		contentPane.setBackground(new Color(39, 45, 80));
 		setTitle("Custom Encrypter/Decrypter");
-		setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/utils/favicon.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getResource("/utils/favicon.jpg")));
 		setContentPane(contentPane);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -121,6 +122,39 @@ public class MainWindow extends JFrame {
 			}
 		});
 
+		// Key Section
+		JLabel keyLabel = new JLabel("Type Key Here");
+		keyLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		keyLabel.setFont(new Font("Calibri", Font.PLAIN, 16));
+		keyLabel.setForeground(new Color(255, 255, 255));
+		keyLabel.setBounds(10, 300, 259, 20);
+		keyLabel.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+
+		JTextPane keyField = new JTextPane();
+		keyField.setBounds(279, 300, 309, 20);
+		keyField.setBackground(new Color(240, 240, 240));
+
+		JButton submitKey = new JButton("Submit Key");
+		submitKey.setBackground(new Color(240, 240, 240));
+		submitKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		submitKey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Creates a random key if none is provided
+				if (key == null || key.isBlank()) {
+					key = CustomCipher.randomKey();
+				} else if (!keyField.getText().strip().isBlank()) {
+					// Changes Key if one is provided
+					key = keyField.getText().strip();
+				}
+				JOptionPane.showMessageDialog(null,
+						"Your Custom Key is: " + key + "\n\nNote: Closing App Removes Existing Keys");
+				keyLabel.setText("Key: " + key);
+			}
+		});
+		submitKey.setBorderPainted(false);
+		submitKey.setFont(new Font("Cambria", Font.BOLD, 12));
+		submitKey.setBounds(599, 300, 104, 20);
+
 		// Encrypt button
 		JButton encryptButton = new JButton("Encrypt");
 		encryptButton.setBounds(279, 257, 125, 32);
@@ -131,12 +165,18 @@ public class MainWindow extends JFrame {
 		encryptButton.setFont(new Font("Cambria", Font.BOLD, 12));
 		encryptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				// Prevents User from Encrypting without selecting a file first
 				try {
 					if (selectedFile == null) {
 						throw new FileNotFoundException("Please Select a File First.");
 					} else {
+						// Creates a random key if none is provided
+						if (key == null || key.isBlank()) {
+							key = CustomCipher.randomKey();
+							JOptionPane.showMessageDialog(null,
+									"Your Custom Key is: " + key + "\n\nNote: Closing App Removes Existing Keys");
+							keyLabel.setText("Key: " + key);
+						}
 						String encryptedContent = CustomCipher.encryptContent(fileContent, key).toString();
 						CustomFileWriter.writeTextToFile(selectedFile, encryptedContent);
 					}
@@ -156,7 +196,6 @@ public class MainWindow extends JFrame {
 		decryptButton.setFont(new Font("Cambria", Font.BOLD, 12));
 		decryptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				// Prevents User from Decrypting without selecting a file first
 				try {
 					if (selectedFile == null) {
@@ -180,32 +219,6 @@ public class MainWindow extends JFrame {
 		credits.setHorizontalAlignment(SwingConstants.TRAILING);
 		credits.setVerticalAlignment(SwingConstants.BOTTOM);
 
-		// Key Field
-		JTextPane keyField = new JTextPane();
-		keyField.setBackground(new Color(240, 240, 240));
-		keyField.setBounds(279, 300, 309, 20);
-
-		JLabel keyLabel = new JLabel("Type Key Here");
-		keyLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		keyLabel.setFont(new Font("Calibri", Font.PLAIN, 16));
-		keyLabel.setForeground(new Color(255, 255, 255));
-		keyLabel.setBounds(10, 300, 259, 20);
-
-		JButton submitKey = new JButton("Submit Key");
-		submitKey.setBackground(new Color(240, 240, 240));
-		submitKey.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		submitKey.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				key = keyField.getText().strip();
-				JOptionPane.showMessageDialog(null, "Your Custom Key is: " + key);
-				keyLabel.setText("Key: " + key);
-			}
-		});
-		submitKey.setBorderPainted(false);
-		submitKey.setFont(new Font("Cambria", Font.BOLD, 12));
-		submitKey.setBounds(599, 300, 104, 20);
-
-		contentPane.add(keyLabel);
 		contentPane.setLayout(null);
 		contentPane.add(title);
 		contentPane.add(uploadFile);
@@ -213,12 +226,12 @@ public class MainWindow extends JFrame {
 		contentPane.add(encryptButton);
 		contentPane.add(decryptButton);
 		contentPane.add(credits);
+		contentPane.add(keyLabel);
 		contentPane.add(keyField);
 		contentPane.add(submitKey);
 
 		// Makes window dynamic
 		this.addComponentListener(new ComponentAdapter() {
-
 			public void componentResized(ComponentEvent e) {
 				// Gets dimensions of window upon user resize
 				windowWidth = getWidth();

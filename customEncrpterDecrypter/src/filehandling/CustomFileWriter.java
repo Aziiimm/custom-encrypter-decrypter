@@ -7,7 +7,8 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 public class CustomFileWriter {
-
+	
+	// Overwrites the content of the file
 	public static void overwriteFile(File selectedFile, String decryptedContent) {
 		try {
 			File decryptedFile = new File(selectedFile.getAbsolutePath());
@@ -16,17 +17,15 @@ public class CustomFileWriter {
 			outFS.close();
 			JOptionPane.showMessageDialog(null, "Successfully Decrypted File: " + selectedFile.getName());
 		} catch (IOException ex) {
-//			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error Writing to File");
 		} catch (SecurityException ex) {
-//			ex.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Error Writing to File");
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(null, ex.getMessage());
-//			ex.printStackTrace();
 		}
 	}
-
+	
+	// Creates a new file to write content to
 	public static void writeTextToFile(File selectedFile, String encryptedContent) {
 
 		try {
