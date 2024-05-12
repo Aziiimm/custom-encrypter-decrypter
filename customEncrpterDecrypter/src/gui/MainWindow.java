@@ -142,7 +142,9 @@ public class MainWindow extends JFrame {
 				// Creates a random key if none is provided
 				if (key == null || key.isBlank()) {
 					key = CustomCipher.randomKey();
-				} else if (!keyField.getText().strip().isBlank()) {
+				} else if (key != null && keyField.getText().strip().isBlank()) {
+					JOptionPane.showMessageDialog(null, "Key Field is Blank\nUsing Previous Key: " + key);
+				} else {
 					// Changes Key if one is provided
 					key = keyField.getText().strip();
 				}
